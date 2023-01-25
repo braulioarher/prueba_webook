@@ -40,15 +40,16 @@ def create_app(db_url=None):
 
         for estado in estados:
             id = cp[estado]["c_estado"][0]
-            estado = estado.replace("_", " ")
-            to_add = EstadoModel(id=int(id), name=estado)
+            estado_add = estado.replace("_", " ")
+            to_add = EstadoModel(id=int(id), name=estado_add)
             
             try:
                 db.session.add(to_add)
                 db.session.commit()
-                print(f"Estado {estado} agregado")
             except SQLAlchemyError:
+                db.session.rollback()
                 print("Error al agregar estado")
+        print("Estados agregados")
         
         for estado in estados:
             municipios = cp[estado]["D_mnpio"]
@@ -67,13 +68,31 @@ def create_app(db_url=None):
                 try:
                     db.session.add(to_add)
                     db.session.commit()
-                    print(f"Municipio {name} agregado")
+                except SQLAlchemyError:
+                    db.session.rollback()
+                    print(f"Error al agregar municipio de {name} en {estado}")
+            print(f"Municipios de {estado} cargados")
+
+        estados = list(cp.keys())
+        
+        for estado in estados:
+            localidades = cp[estado][["d_codigo", "d_asenta"]].copy()
+            localidades["id_muni"] = cp[estado]["c_estado"].astype(str) + cp[estado]["c_mnpio"].astype(str)
+            
+            for idex, row in localidades.iterrows():
+                name = row["d_asenta"]
+                codigo_p = int(row["d_codigo"])
+                id_muni = int(row["id_muni"])
+                to_add = LocalidadModel(name=name, cp=codigo_p, id_muni=id_muni)
+
+                try:
+                    db.session.add(to_add)
+                    db.session.commit()
                 except SQLAlchemyError:
                     db.session.rollback()
                     print(f"Error al agregar {name} municipio")
 
-                
-
+            print(f"Localidades de {estado} cargadas")
     
     @app.cli.command()
     def erasedata():
