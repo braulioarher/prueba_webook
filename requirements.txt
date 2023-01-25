@@ -5,3 +5,5 @@ marshmallow
 sqlalchemy
 flask-sqlalchemy
 flask-migrate
+pandas
+xlrd
