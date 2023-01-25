@@ -9,7 +9,8 @@ from sqlalchemy.exc import SQLAlchemyError
 from db import db
 from models import EstadoModel, MunicipioModel, LocalidadModel
 from resources.estado import blp as EstadoBlueprint
-
+from resources.municipio import blp as MunicipioBlueprint
+from resources.localidad import blp as LocalidadBlueprint
 
 def create_app(db_url=None):
     
@@ -17,7 +18,6 @@ def create_app(db_url=None):
 
 
     # Variables de entorno de nuestra app
-    app.config["DEBUG"] = 1
     app.config["PROPAGATE_EXCEPTIONS"] = True
     app.config["API_TITLE"] = "Events API"
     app.config["API_VERSION"] = "v1"
@@ -36,6 +36,8 @@ def create_app(db_url=None):
 
     #Registro de blueprints en nuestra API
     api.register_blueprint(EstadoBlueprint)
+    api.register_blueprint(MunicipioBlueprint)
+    api.register_blueprint(LocalidadBlueprint)
 
     # Cargar informacion
     @app.cli.command()
