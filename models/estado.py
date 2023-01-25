@@ -5,4 +5,4 @@ class EstadoModel(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, unique=True, nullable=False)
-    municipios = db.relationship("MunicipioModel", back_populates="estado", lazy="dynamic", cascade="all")
+    municipios = db.relationship("MunicipioModel", back_populates="estado", lazy="dynamic", cascade="all, delete-orphan")

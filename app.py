@@ -8,6 +8,7 @@ from sqlalchemy.exc import SQLAlchemyError
 
 from db import db
 from models import EstadoModel, MunicipioModel, LocalidadModel
+from resources.estado import blp as EstadoBlueprint
 
 
 def create_app(db_url=None):
@@ -16,6 +17,7 @@ def create_app(db_url=None):
 
 
     # Variables de entorno de nuestra app
+    app.config["DEBUG"] = 1
     app.config["PROPAGATE_EXCEPTIONS"] = True
     app.config["API_TITLE"] = "Events API"
     app.config["API_VERSION"] = "v1"
@@ -31,6 +33,9 @@ def create_app(db_url=None):
 
     # Creacion de api
     api = Api(app)
+
+    #Registro de blueprints en nuestra API
+    api.register_blueprint(EstadoBlueprint)
 
     # Cargar informacion
     @app.cli.command()
