@@ -11,9 +11,9 @@ blp = Blueprint("localidades", __name__, description="Opereaciones en localidade
 
 @blp.route("/localidad/<string:localidad_name>")
 class Localidad(MethodView):
-    @blp.response(200, PlainLocalidadSchema)
+    @blp.response(200, PlainLocalidadSchema(many=True))
     def get(self, localidad_name):
-        localidad = db.session.query(LocalidadModel).filter(LocalidadModel.name == localidad_name).first_or_404()
+        localidad = db.session.query(LocalidadModel).filter(LocalidadModel.name == localidad_name).all()
         return localidad
 
 @blp.route("/localidad/cp/<string:codigo_postal>")
